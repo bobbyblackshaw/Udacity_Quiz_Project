@@ -3,7 +3,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jun 28 18:01:51 2016
-Last Edited on Wed Jun 29 23:18:00 2016
+Edited on Wed Jun 29 23:18:00 2016
+Edited on Thurs Jun 30 14:11:00 2016
 @author: robertblackshaw
 """
 ##############################################################################
@@ -34,7 +35,7 @@ CEO of ___1___, as well as ___5___ motors, and co-founded ___6___.'''
 
 def fin_check(word, fill_in_numbers):
     '''Checks if a word in fill_in_numbers is asubstring of the word
-passed in.'''
+       passed in.'''
     for fin in fill_in_numbers:
         if fin in word:
             return fin
@@ -43,10 +44,10 @@ passed in.'''
 
 def log_entries(fill_in_numbers, word, new):
     '''Replaces the blank space numbers in fill_in_numbers with the 
-entry given by the user. This is so if there are multiple occurences of a
-blank space number, the word already used can be easily accessible
-input:  list of numbered spaces, a numbered space, a word inputted by the user
-no output: just modifies the list fill_in_numbers'''
+       entry given by the user. This is so if there are multiple occurences of a
+       blank space number, the word already used can be easily accessible
+       input:  list of numbered spaces, a numbered space, a word inputted by the user
+       no output: just modifies the list fill_in_numbers'''
     if fin_check(word, fill_in_numbers) != None and word in fill_in_numbers:
         index_of_number = fill_in_numbers.index(word)                               
         fill_in_numbers[index_of_number] = new  #updates fill_in_numbers
@@ -56,7 +57,7 @@ no output: just modifies the list fill_in_numbers'''
 
 def start(fill_in_numbers):
     '''Prompts the user to pick a difficulty and returns the corresponding 
-string and the answers'''
+       string and the answers'''
     print '''Select a difficulty by typing it in. Options are: easy, 
 medium, and hard.'''
     while True:
@@ -73,6 +74,8 @@ medium, and hard.'''
 
 ##############################################################################
 def ask_and_check(replacement, difficulty):
+    '''Handles the input from the user. If answer is correct, it is returned.
+       If it is wrong, it tells the user, and prompts them again until correct.'''
     #prompt the user
     user_input = raw_input("Space Number " + replacement + ":  ")
     user_input = user_input.lower()
@@ -85,13 +88,27 @@ def ask_and_check(replacement, difficulty):
         user_input = user_input.lower()
     return user_input
 
+##############################################################################
+    '''Takes the word and changes it to what the user entered. Then it
+       puts the whole string back together. Removes punctuation off of word. 
+       Replaces replacement with word in the string. Prints the string, makes it
+       a list again, then returns it.'''
+def manipulate_word_and_string(word, replacement, user_input, fin_string):
+    word = word.replace(replacement, user_input)
+    fin_string = " ".join(fin_string)
+    if word[-1] == "." or word[-1] == ",": #check for punctuation
+        word = word[:-1]
+    fin_string = fin_string.replace(replacement, word)
+    print fin_string
+    fin_string = fin_string.split()
+    return fin_string
+
 
 ##############################################################################
 
-
 def quiz(fill_in_numbers): 
     '''This the the quiz. It prints the unfilled in quiz paragraph and 
-prompts the user. The user answers the questions to fill in the blanks'''
+       prompts the user. The user answers the questions to fill in the blanks'''
     fin_string, difficulty = start(fill_in_numbers) #gets string and answers
     print fin_string
     fin_string = fin_string.split() #makes the string a list
@@ -99,21 +116,12 @@ prompts the user. The user answers the questions to fill in the blanks'''
         replacement = fin_check(word, set_list)
         if replacement != None: #checks if word is a numbered space
             if replacement not in fill_in_numbers: 
-                #if it is, check if it has been answered already
                 index_of_number = set_list.index(replacement)
                 word = fill_in_numbers[index_of_number]  
-                #if it has, assign to word the entry that has
-                #replaced the numbered space already
             else:                                       
                 user_input = ask_and_check(replacement, difficulty)
                 log_entries(fill_in_numbers, replacement, user_input) 
-                #make this a function
-                '''word = word.replace(replacement, user_input)
-                fin_string = " ".join(fin_string)
-                if word[-1] == "." or word[-1] == ",": #check for punctuation
-                    word = word[:-1]
-                fin_string = fin_string.replace(replacement, word)
-                print fin_string
-                fin_string = fin_string.split()'''
+                fin_string = manipulate_word_and_string(word, replacement,
+                                           user_input, fin_string)
                 
 quiz(fill_in_numbers)
